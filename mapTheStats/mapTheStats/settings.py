@@ -23,6 +23,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')q7hi5ceswu1uw+@(z=)vs2aasdj)ozx*)y9k+a!1te5u1h&qm'
 GOOGLE_MAPS_API_KEY = "AIzaSyDaXQ4lvSyI5ERL6GJjOtvGTpxClWGsDOA"
 
+BEA_API_KEY = "692B0866-DAF4-4161-B1FE-A1FBEB3C066F"
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
