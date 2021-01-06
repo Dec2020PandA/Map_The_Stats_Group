@@ -13,12 +13,13 @@ bea_url = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datase
 )
 bea_response = requests.get(url=bea_url)
 bea_content = bea_response.json()
+pprint(bea_content)
 pprint(f"Location Selected: {bea_content['BEAAPI']['Results']['Data'][0]['GeoName']}\nPer Capita Income: {bea_content['BEAAPI']['Results']['Data'][0]['DataValue']}\nYear: {bea_content['BEAAPI']['Results']['Data'][0]['TimePeriod']}")
 
 ## API call for percentage of families below poverty level = DP03_0119PE
-census_url = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=state:06&key={census_key}".format(
-    census_key=CENSUS_API_KEY
-)
-census_response = requests.get(url=census_url)
-census_content = census_response.json()
-pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
+# census_url = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=state:06&key={census_key}".format(
+#     census_key=CENSUS_API_KEY
+# )
+# census_response = requests.get(url=census_url)
+# census_content = census_response.json()
+# pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
