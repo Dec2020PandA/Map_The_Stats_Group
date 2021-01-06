@@ -65,24 +65,23 @@
             strokeWeight : 1 
         })
         //click events
-        map.data.addListener('click', function(e){
-            var location = e.latLng;
-            map.setCenter(location);
-            map.setZoom(6);
-        })
         map.data.addListener('mouseover', function(e){
             map.data.overrideStyle(e.feature, {fillColor : 'yellow'});
+        })
+        map.data.addListener('click', function(e){
+            map.data.overrideStyle(e.feature, {fillColor : 'yellow'})
+            var state = e.feature.getProperty("STATE")
+            document.getElementById('hidden_state').value = state;
+            console.log(document.getElementById('hidden_state').value)
         })
         map.data.addListener('mouseout', function(e){
             map.data.overrideStyle(e.feature, {fillColor : 'blue'});
         })
         map.data.addListener('click', function(e){
-            map.data.overrideStyle(e.feature, {fillColor : 'yellow'})
-            var state = e.feature.getProperty("STATE");
-            console.log(state)
+            var location = e.latLng;
+            map.setCenter(location);
+            map.setZoom(6);
         })
-
-
         }
 
         /** Loads the state boundary polygons from a GeoJSON source. */
@@ -157,7 +156,7 @@
     <form action="" method="post">
         {% csrf_token %}
         <!-- Hidden input dynamically will change based on selected state -->
-        <input type="hidden" value="" name="state">
+        <input type="hidden" value="" name="state_id" id="hidden_state">
         <input type="submit" value="Testing">
     </form>
     {% csrf_token %}
