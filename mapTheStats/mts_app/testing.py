@@ -9,16 +9,6 @@ GOOGLE_MAPS_API_KEY = "AIzaSyDaXQ4lvSyI5ERL6GJjOtvGTpxClWGsDOA"
 CENSUS_API_KEY = "51170a508f499d465f5359a5d26af29499a531d3"
 WEATHERSTACK_API_KEY = "3f16f995c3281743b7421e3ebad06b7c"
 
-# ## RENDERING
-
-# def index (request):
-#     context = {
-#         'gmaps' : GOOGLE_MAPS_API_KEY,
-#     }
-#     return render(request, 'index.html', context)
-
-## API CALLS
-
 
     ## BEA API call for average income for all United States, we can then search the dict for selected state // Must add three zeroes to the end of the selected states ID
     ## BEA API uses 06000 as California's FIPS code, rather than 06, must account for that.
