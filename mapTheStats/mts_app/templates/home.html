@@ -48,28 +48,24 @@
             disableDefaultUI: true,
             styles: mapStyle,
         });
-        //marker
-        map.data.addListener('click', function(e) {
-        placeMarker(e.latLng, map);
-        });
-        function placeMarker(location, map) {
-        var marker = new google.maps.Marker({
-        position: location, 
-        map: map,
-        animation: google.maps.Animation.DROP,
-        })
-        }
+
         // set up the style rules and events for google.maps.Data
         loadMapShapes();
         map.data.setStyle({
             fillColor : 'blue',
             strokeWeight : 1 
         })
+        //click events
         map.data.addListener('mouseover', function(e){
             map.data.overrideStyle(e.feature, {fillColor : 'yellow'});
         })
         map.data.addListener('mouseout', function(e){
             map.data.overrideStyle(e.feature, {fillColor : 'blue'});
+        })
+        map.data.addListener('click', function(e){
+            var location = e.latLng;
+            map.setCenter(location);
+            map.setZoom(6);
         })
         }
 
