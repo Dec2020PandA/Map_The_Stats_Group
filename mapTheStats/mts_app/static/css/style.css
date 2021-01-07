@@ -113,16 +113,12 @@ figure {
 /* map style */
 
 #map {
-  display: inline-block;
-  box-shadow: .4px .4px 3px 3px;
-  margin-left: 150px;
-  margin-right: 59px;
-  margin-top: 350px;
-  position: absolute;
-  height: 600px;
-  width: 600px;
+  overflow: hidden;
+  margin-left: 340px;
+  position: relative;
+  height: 780px;
+  width: 1270px;
 }
-
 /*
 Extra small (xs) devices (portrait phones, less than 576px)
 No media query since this is the default in Bootstrap

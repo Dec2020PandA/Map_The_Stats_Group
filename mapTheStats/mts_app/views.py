@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
 
+<<<<<<< HEAD
 ## API KEYS
 
 BEA_API_KEY = "692B0866-DAF4-4161-B1FE-A1FBEB3C066F"
@@ -12,6 +13,10 @@ WEATHERSTACK_API_KEY = "3f16f995c3281743b7421e3ebad06b7c"
 ## RENDERING
 
 def index (request):
+=======
+
+def home (request):
+>>>>>>> a0068d14ba122226a024e52facec547b7bed481b
     context = {
         'gmaps' : GOOGLE_MAPS_API_KEY,
     }
