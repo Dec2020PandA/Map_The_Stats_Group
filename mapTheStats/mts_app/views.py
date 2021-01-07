@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
+from area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES
 
 ## API KEYS
 
@@ -16,6 +17,32 @@ def index (request):
         'gmaps' : GOOGLE_MAPS_API_KEY,
     }
     return render(request, 'index.html', context)
+
+## LOCATION DECODING
+
+def decipher_location_type(request):
+    ## Checking if its a Country first, due to smallest data field.
+    if request.method == 'POST':
+        for key in COUNTRY_CODES:
+            if request.POST['location_name'] == key:
+                request.session['key'] = key
+                request.session['value'] = COUNTRY_CODES[key]
+                return redirect('/country_api_call')
+        for key in STATE_CODES:
+            if request.POST['location_name'] == key:
+                request.session['key'] = key
+                request.session['value'] = STATE_CODES[key]
+                return redirect('/state_api_call')
+        for key in MSA_CODES:
+            if request.POST['location_id'] == key:
+                request.session['value'] = key
+                request.session['key'] = MSA_CODES[key]
+                return redirect('/MSA_api_call')
+        else:
+            ## Should redirect to an error page. Something isn't working properly.
+            return redirect('/')
+
+
 
 ## API CALLS
 
