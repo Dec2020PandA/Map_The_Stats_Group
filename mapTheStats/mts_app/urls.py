@@ -3,5 +3,7 @@ from . import views
 
 urlpatterns = [
     path('', views.index),
-    path('call', views.api_call),
+    path('state_api_call', views.state_api_call),
+    path('country_api_call', views.country_api_call),
+    path('msa_api_call', views.msa_api_call),
 ]
