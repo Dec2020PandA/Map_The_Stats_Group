@@ -164,3 +164,6 @@ def msa_api_call(request):
     census_response = requests.get(url=census_unemployment)
     census_content = census_response.json()
     pprint(census_content)
+
+     ## BLS API call for unemployment rate for any
+    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAUMT261146000000003?latest=true"
