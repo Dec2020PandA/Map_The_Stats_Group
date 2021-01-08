@@ -1,14 +1,8 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
-from area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES
-
-## API KEYS
-
-BEA_API_KEY = "692B0866-DAF4-4161-B1FE-A1FBEB3C066F"
-GOOGLE_MAPS_API_KEY = "AIzaSyDaXQ4lvSyI5ERL6GJjOtvGTpxClWGsDOA"
-CENSUS_API_KEY = "51170a508f499d465f5359a5d26af29499a531d3"
-WEATHERSTACK_API_KEY = "3f16f995c3281743b7421e3ebad06b7c"
+from mts_app.local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES
+from mts_app.local_library.api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
 
 ## RENDERING
 
@@ -21,22 +15,25 @@ def index (request):
 ## LOCATION DECODING
 
 def decipher_location_type(request):
-    ## Checking if its a Country first, due to smallest data field.
+    ## Checks if selected area is a Country first, due to smallest data set.
     if request.method == 'POST':
         for key in COUNTRY_CODES:
             if request.POST['location_name'] == key:
-                request.session['key'] = key
-                request.session['value'] = COUNTRY_CODES[key]
+                request.session['loc_name'] = key
+                request.session['loc_id'] = COUNTRY_CODES[key]
                 return redirect('/country_api_call')
+        ## Checks if selected area is a State next.
         for key in STATE_CODES:
             if request.POST['location_name'] == key:
-                request.session['key'] = key
-                request.session['value'] = STATE_CODES[key]
+                request.session['loc_name'] = key
+                request.session['loc_id'] = STATE_CODES[key]
                 return redirect('/state_api_call')
+        ## Checks MSA's last due to larger data set.
         for key in MSA_CODES:
             if request.POST['location_id'] == key:
-                request.session['value'] = key
-                request.session['key'] = MSA_CODES[key]
+                request.session['loc_id'] = key
+                request.session['loc_name'] = MSA_CODES[key]
+                request.session['long_lat'] = request.POST['long_lat']
                 return redirect('/MSA_api_call')
         else:
             ## Should redirect to an error page. Something isn't working properly.
@@ -48,10 +45,10 @@ def decipher_location_type(request):
 
 def state_api_call(request):
     ## BEA API call for average income for all United States, we can then search the dict for selected state // Must add three zeroes to the end of the selected states ID
-    ## BEA API uses 06000 as California's FIPS code, rather than 06, must account for that.
     ## Table: CAINC1
-    bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips={needs_to_be_dynamic}000&ResultFormat=json".format(
-        bea_key=BEA_API_KEY
+    bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips={state_code}000&ResultFormat=json".format(
+        bea_key=BEA_API_KEY,
+        state_code = request.session['loc_id']
     )
     bea_response = requests.get(url=bea_average_income)
     bea_content = bea_response.json()
@@ -60,17 +57,19 @@ def state_api_call(request):
     ## CENSUS API call for percentage of families below poverty level in California
     ## CENSUS API responses can contain multiple arrays for each city INSIDE of an MSA, must account for this. for loop, skip 0 index.
     ## Table: acs DP03_0119PE
-    census_poverty = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=state:{needs_to_be_dynamic}&key={census_key}".format(
-        census_key=CENSUS_API_KEY
+    census_poverty = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=state:{state_code}&key={census_key}".format(
+        census_key=CENSUS_API_KEY,
+        state_code = request.session['loc_id']
     )
     census_response = requests.get(url=census_poverty)
     census_content = census_response.json()
     pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
 
     ## CENSUS API call for estimated population in California // Accesses different database than ACS
-    ## Table: data pep/population
-    census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=state:{needs_to_be_dynamic}&key={census_key}".format(
-        census_key=CENSUS_API_KEY
+    ## Table: data pep/population, not ACS
+    census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=state:{state_code}&key={census_key}".format(
+        census_key=CENSUS_API_KEY,
+        state_code = request.session['loc_id']
     )
     census_response = requests.get(url=census_population)
     census_content = census_response.json()
@@ -79,8 +78,9 @@ def state_api_call(request):
     ## CENSUS API call for unemployment rate in California
     ## Table: acs DP03_0009PE
     ## WE MAY WANT TO TRANSITION OVER TO THE BLS API FOR THIS STATISTIC TO BE UP TO DATE
-    census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=state:{needs_to_be_dynamic}&key={census_key}".format(
-        census_key=CENSUS_API_KEY
+    census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=state:{state_code}&key={census_key}".format(
+        census_key=CENSUS_API_KEY,
+        state_code = request.session['loc_id']
     )
     census_response = requests.get(url=census_unemployment)
     census_content = census_response.json()
@@ -120,20 +120,47 @@ def country_api_call(request):
     pprint(census_content)
 
 def msa_api_call(request):
-    ## MSA average income, GeoFips must match MSA codes, that we can access via local_library
-    bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips={needs_to_be_dynamic}&ResultFormat=json".format(
-        bea_key=BEA_API_KEY
+    ## BEA API call for selected MSA average income
+    bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips={msa_code}&ResultFormat=json".format(
+        bea_key=BEA_API_KEY,
+        msa_code = request.session['loc_id']
     )
     bea_response = requests.get(url=bea_average_income)
     bea_content = bea_response.json()
     pprint(f"Location Selected: {bea_content['BEAAPI']['Results']['Data'][0]['GeoName']}\nPer Capita Income: {bea_content['BEAAPI']['Results']['Data'][0]['DataValue']}\nYear: {bea_content['BEAAPI']['Results']['Data'][0]['TimePeriod']}")
 
     ## WEATHERSTACK API call for current weather based on LONG/LAT // Only accessible via MSA
-    ## Long/Lat of selected area needs to be carried into views, and hence dynamically applied via a variable // first iteration of website will
-    ## Likely only handle Country, States, and MSA's, so the longitude and latitude of current weather needs to be applied to the currently selected MSA.
-    weatherstack_current = "http://api.weatherstack.com/current?access_key={weatherstack_key}&query={needs_to_be_dynamic}&units=f".format(
-        weatherstack_key=WEATHERSTACK_API_KEY
+    weatherstack_current = "http://api.weatherstack.com/current?access_key={weatherstack_key}&query={long_lat}&units=f".format(
+        weatherstack_key=WEATHERSTACK_API_KEY,
+        long_lat = request.session['long_lat']
     )
     weatherstack_response = requests.get(url=weatherstack_current)
     weatherstack_content = weatherstack_response.json()
     pprint(f"Location: {weatherstack_content['location']['name']}\nCurrent Temperature: {weatherstack_content['current']['temperature']}")
+
+    ## Census API call for % of people living below poverty line in selected MSA
+    census_poverty = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
+        census_key = CENSUS_API_KEY,
+        msa_code = request.session['loc_id']
+    )
+    census_response = requests.get(url=census_poverty)
+    census_content = census_response.json()
+    pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
+
+    ## Census API call for population of selected MSA
+    census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
+        census_key=CENSUS_API_KEY,
+        msa_code = request.session['loc_id']
+    )
+    census_response = requests.get(url=census_population)
+    census_content = census_response.json()
+    pprint(census_content)
+
+    ## Census API call for unemployment level of selected MSA
+    census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
+        census_key=CENSUS_API_KEY,
+        msa_code = request.session['loc_id']
+    )
+    census_response = requests.get(url=census_unemployment)
+    census_content = census_response.json()
+    pprint(census_content)

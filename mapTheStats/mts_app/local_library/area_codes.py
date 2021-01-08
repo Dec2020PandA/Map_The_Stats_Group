@@ -10,8 +10,8 @@ COUNTRY_CODES = {'United States': ['01','00000', 'US', 'us']}
 #     print('no')
 
 # print(MSA_CODES['20740'])
-for key in COUNTRY_CODES:
-    if 'United States' == key:
-        print(COUNTRY_CODES[key])
+# for key in COUNTRY_CODES:
+#     if 'United States' == key:
+#         print(COUNTRY_CODES[key])
 
 # print(COUNTRY_CODES['United States'])
