@@ -50,7 +50,7 @@
         });
         // set up the style rules and events for google.maps.Data
         loadMapShapes();
-        
+
         var xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function(){
             if (this.readyState == 4 && this.status == 200) {
@@ -153,14 +153,13 @@
     </div>
 
     <div id="map"></div>
-    <form action="" method="post">
+    <form action="/decipher_location_type" method="post">
         {% csrf_token %}
         <!-- Hidden input dynamically will change based on selected state -->
-        <input type="hidden" value="" name="state_id" id="hidden_state">
+        <input type="hidden" value="" name="location_id" id="hidden_location">
+        <input type="hidden" value = "" name="location_name" id="hidden_name">
         <input type="submit" value="Testing">
     </form>
-    {% csrf_token %}
-
 
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
         <a href="#"><button type="button" class="btn btn-outline-secondary">Get Stats</button></a>
