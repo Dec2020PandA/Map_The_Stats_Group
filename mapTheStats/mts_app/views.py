@@ -110,3 +110,4 @@ def msa_api_call(request):
     weatherstack_response = requests.get(url=weatherstack_current)
     weatherstack_content = weatherstack_response.json()
     pprint(f"Location: {weatherstack_content['location']['name']}\nCurrent Temperature: {weatherstack_content['current']['temperature']}")
+    
