@@ -57,7 +57,7 @@
                 var state_data = JSON.parse(this.responseText);
             }
         }
-        xmlhttp.open('HEAD', 'https://storage.cloud.google.com/map_tha_stats/gz_2010_us_050_00_20m.json', true)
+        xmlhttp.open('GET', 'https://storage.googleapis.com/mapsdevsite/json/states.js', true)
         xmlhttp.send();
         //
         map.data.setStyle({
@@ -88,8 +88,8 @@
         function loadMapShapes() {
         // load US state outline polygons from a GeoJson file
         map.data.loadGeoJson(
-            "https://storage.cloud.google.com/map_tha_stats/gz_2010_us_050_00_20m.json",
-            { idPropertyName: "CENSUSAREA" }
+            "https://storage.googleapis.com/mapsdevsite/json/states.js",
+            { idPropertyName: "STATE" }
         );
 
         }
