@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
-from mts_app.local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES
+from mts_app.local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_CODES
 from mts_app.local_library.api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
 
 ## RENDERING
@@ -33,7 +33,10 @@ def decipher_location_type(request):
             if request.POST['location_id'] == key:
                 request.session['loc_id'] = key
                 request.session['loc_name'] = MSA_CODES[key]
-                request.session['long_lat'] = request.POST['long_lat']
+                # request.session['long_lat'] = request.POST['long_lat']
+                for bls_key in BLS_CODES:
+                    if BLS_CODES[bls_key] == MSA_CODES[key]:
+                        request.session['bls_id'] = bls_key
                 return redirect('/MSA_api_call')
         else:
             ## Should redirect to an error page. Something isn't working properly.
@@ -166,4 +169,9 @@ def msa_api_call(request):
     pprint(census_content)
 
      ## BLS API call for unemployment rate for any
-    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAUMT261146000000003?latest=true"
+    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAU{bls_msa_code}03?latest=true".format(
+        bls_msa_code = request.session['bls_id']
+    )
+    bls_response = requests.get(url=bls_unemployment)
+    bls_content = bls_response.json()
+    pprint(bls_content)
