@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
-from mts_app.local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_CODES
+from mts_app.local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
 from mts_app.local_library.api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
 
 ## RENDERING
@@ -34,8 +34,8 @@ def decipher_location_type(request):
                 request.session['loc_id'] = key
                 request.session['loc_name'] = MSA_CODES[key]
                 # request.session['long_lat'] = request.POST['long_lat']
-                for bls_key in BLS_CODES:
-                    if BLS_CODES[bls_key] == MSA_CODES[key]:
+                for bls_key in BLS_MSA_CODES:
+                    if BLS_MSA_CODES[bls_key] == MSA_CODES[key]:
                         request.session['bls_id'] = bls_key
                 return redirect('/MSA_api_call')
         else:
@@ -78,16 +78,13 @@ def state_api_call(request):
     census_content = census_response.json()
     pprint(census_content)
 
-    ## CENSUS API call for unemployment rate in California
-    ## Table: acs DP03_0009PE
-    ## WE MAY WANT TO TRANSITION OVER TO THE BLS API FOR THIS STATISTIC TO BE UP TO DATE
-    census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=state:{state_code}&key={census_key}".format(
-        census_key=CENSUS_API_KEY,
+    ## BLS API call for unemployment rate for selected state
+    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAUST{state_code}0000000000003?latest=true".format(
         state_code = request.session['loc_id']
     )
-    census_response = requests.get(url=census_unemployment)
-    census_content = census_response.json()
-    pprint(census_content)
+    bls_response = requests.get(url=bls_unemployment)
+    bls_content = bls_response.json()
+    pprint(bls_content)
 
 def country_api_call(request):
     ## Entire US average income // Notes above
@@ -156,15 +153,6 @@ def msa_api_call(request):
         msa_code = request.session['loc_id']
     )
     census_response = requests.get(url=census_population)
-    census_content = census_response.json()
-    pprint(census_content)
-
-    ## Census API call for unemployment level of selected MSA
-    census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
-        census_key=CENSUS_API_KEY,
-        msa_code = request.session['loc_id']
-    )
-    census_response = requests.get(url=census_unemployment)
     census_content = census_response.json()
     pprint(census_content)
 

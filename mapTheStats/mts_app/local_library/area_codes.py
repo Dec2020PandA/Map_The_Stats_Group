@@ -16,7 +16,7 @@ COUNTRY_CODES = {'United States': ['01','00000', 'US', 'us']}
 
 # print(COUNTRY_CODES['United States'])
 
-BLS_CODES = {'MT0112220000000': 'Auburn-Opelika, AL',
+BLS_MSA_CODES = {'MT0112220000000': 'Auburn-Opelika, AL',
  'MT0113820000000': 'Birmingham-Hoover, AL',
  'MT0119300000000': 'Daphne-Fairhope-Foley, AL',
  'MT0119460000000': 'Decatur, AL',
