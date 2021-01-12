@@ -18,7 +18,7 @@ def index (request):
                 'bls_unemployment' : request.session['bls_unemployment']
             }
             for key in request.session.keys():
-                if key not 'location_selected':
+                if key not 'location_selected' or 'loc_type':
                     del request.session[key]
             return render(request, 'index.html', context)
         else:
