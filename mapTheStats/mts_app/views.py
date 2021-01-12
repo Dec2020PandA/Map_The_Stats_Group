@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
-from local_library.area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
-from local_library.api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
+from .area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
+from .api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
 
 ## RENDERING
 
 def index (request):
-    if request.session['loc_type']:
+    if 'loc_type' in request.session:
         if request.session['loc_type'] == 'state':
             context = {
                 'gmaps' : GOOGLE_MAPS_API_KEY,
@@ -18,14 +18,14 @@ def index (request):
                 'bls_unemployment' : request.session['bls_unemployment']
             }
             for key in request.session.keys():
-                if key not 'location_selected' or 'loc_type':
+                if key != 'location_selected' or 'loc_type':
                     del request.session[key]
             return render(request, 'index.html', context)
-        else:
-            context = {
-                'gmaps' : GOOGLE_MAPS_API_KEY,
-            }
-            return render(request, 'index.html', context)
+    else:
+        context = {
+            'gmaps' : GOOGLE_MAPS_API_KEY,
+        }
+        return render(request, 'index.html', context)
 
 ## LOCATION DECODING
 
@@ -41,6 +41,7 @@ def decipher_location_type(request):
         ## Checks if selected area is a State next.
         for key in STATE_CODES:
             if request.POST['location_name'] == key:
+                print(f"State confirmed! {key} selected!")
                 request.session['loc_type'] = 'state'
                 request.session['loc_name'] = key
                 request.session['loc_id'] = STATE_CODES[key]
