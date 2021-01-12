@@ -17,9 +17,9 @@ def index (request):
                 'census_population' : request.session['census_population'],
                 'bls_unemployment' : request.session['bls_unemployment']
             }
-            for key in request.session.keys():
-                if key != 'location_selected' or 'loc_type':
-                    del request.session[key]
+            temp_loc = request.session['location_selected']
+            request.session.clear()
+            request.session['location_selected'] = temp_loc
             return render(request, 'index.html', context)
     else:
         context = {
@@ -102,6 +102,8 @@ def state_api_call(request):
     bls_content = bls_response.json()
     request.session['bls_unemployment'] = bls_content['Results']['series'][0]['data'][0]['value']
 
+    return redirect('/')
+
 def country_api_call(request):
     ## Entire US average income // Notes above
     bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips=STATE&ResultFormat=json".format(
@@ -135,6 +137,8 @@ def country_api_call(request):
     census_content = census_response.json()
     pprint(census_content)
 
+    return redirect('/')
+
 def msa_api_call(request):
     ## BEA API call for selected MSA average income
     bea_average_income = "https://apps.bea.gov/api/data/?UserID={bea_key}&method=GetData&datasetname=Regional&TableName=CAINC1&LineCode=3&Year=2019&GeoFips={msa_code}&ResultFormat=json".format(
@@ -153,3 +157,5 @@ def msa_api_call(request):
     weatherstack_response = requests.get(url=weatherstack_current)
     weatherstack_content = weatherstack_response.json()
     pprint(f"Location: {weatherstack_content['location']['name']}\nCurrent Temperature: {weatherstack_content['current']['temperature']}")
+
+    return redirect('/')
