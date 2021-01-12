@@ -76,10 +76,13 @@ function initMap() {
         map.setZoom(6);
         document.getElementById('hidden_location').value = loc_id;
         document.getElementById('hidden_name').value = loc_name;
-        map.data.loadGeoJson(
-            "https://cors-anywhere.herokuapp.com/https://storage.googleapis.com/map_the_stats/msa_data_usa.json",
-            { idPropertyName: "CENSUSAREA"}
-        )
+        function load_state_msa (loc_name){
+            map.data.loadGeoJson(
+                "https://cors-anywhere.herokuapp.com/https://storage.googleapis.com/map_the_stats/msa_data_usa.json",
+                { idPropertyName: "CENSUSAREA"}
+            )
+        }
+        load_state_msa();
     })
     map.data.addListener('mouseout', function (e) {
         map.data.overrideStyle(e.feature, { fillColor: 'blue' });
