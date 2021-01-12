@@ -71,10 +71,15 @@ function initMap() {
         var loc_id = e.feature.getProperty("STATE")
         var loc_name = e.feature.getProperty("NAME")
         var location = e.latLng;
+        console.log
         map.setCenter(location);
         map.setZoom(6);
         document.getElementById('hidden_location').value = loc_id;
         document.getElementById('hidden_name').value = loc_name;
+        map.data.loadGeoJson(
+            "https://cors-anywhere.herokuapp.com/https://storage.googleapis.com/map_the_stats/msa_data_usa.json",
+            { idPropertyName: "CENSUSAREA"}
+        )
     })
     map.data.addListener('mouseout', function (e) {
         map.data.overrideStyle(e.feature, { fillColor: 'blue' });
@@ -88,8 +93,4 @@ function loadMapShapes() {
         "https://storage.googleapis.com/mapsdevsite/json/states.js",
         { idPropertyName: "STATE" }
     );
-    // map.data.loadGeoJson(
-    //     "https://storage.googleapis.com/map_the_stats/gz_2010_us_050_00_20m.js",
-    //     { idPropertyName: "CENSUSAREA"}
-    // )
 }
