@@ -63,7 +63,7 @@
         
         map.data.setStyle({
             fillColor : 'blue',
-            strokeWeight : 1 
+            strokeWeight : 1
         })
         //click events
         map.data.addListener('mouseover', function(e){
@@ -177,7 +177,7 @@
     </div>
     <hr class="line">
     <div class="col-12">
-        {% if request.session.loc_type == state %}
+        {% if loc_type in request.session %}
             <h2>{selected_loc} stats:</h2>
             <ul>
                 <li>Amount of people living in {selected_loc}: {census_population}</li>
