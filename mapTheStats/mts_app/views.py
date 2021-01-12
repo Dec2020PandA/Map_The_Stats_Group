@@ -152,29 +152,3 @@ def msa_api_call(request):
     weatherstack_response = requests.get(url=weatherstack_current)
     weatherstack_content = weatherstack_response.json()
     pprint(f"Location: {weatherstack_content['location']['name']}\nCurrent Temperature: {weatherstack_content['current']['temperature']}")
-
-    ## Census API call for % of people living below poverty line in selected MSA
-    census_poverty = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
-        census_key = CENSUS_API_KEY,
-        msa_code = request.session['loc_id']
-    )
-    census_response = requests.get(url=census_poverty)
-    census_content = census_response.json()
-    pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
-
-    ## Census API call for population of selected MSA
-    census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=metropolitan%20statistical%20area/micropolitan%20statistical%20area:{msa_code}&key={census_key}".format(
-        census_key=CENSUS_API_KEY,
-        msa_code = request.session['loc_id']
-    )
-    census_response = requests.get(url=census_population)
-    census_content = census_response.json()
-    pprint(census_content)
-
-     ## BLS API call for unemployment rate for any
-    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAU{bls_msa_code}03?latest=true".format(
-        bls_msa_code = request.session['bls_id']
-    )
-    bls_response = requests.get(url=bls_unemployment)
-    bls_content = bls_response.json()
-    pprint(bls_content)
