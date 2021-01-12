@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from pprint import pprint
 import requests
+import json
 from .area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
-from .api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY
+from .api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY, BLS_API_KEY
 
 ## RENDERING
 
 def index (request):
     if 'loc_type' in request.session:
-        if request.session['loc_type'] == 'state':
+        if request.session['loc_type'] == 'state' or 'country':
             if 'location_selected' in request.session:
                 context = {
                     'gmaps' : GOOGLE_MAPS_API_KEY,
@@ -103,10 +104,11 @@ def state_api_call(request):
     request.session['census_population'] = "{:,}".format(int(census_content[1][1]))
 
     ## BLS API call for unemployment rate for selected state
-    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAUST{state_code}0000000000003?latest=true".format(
-        state_code = request.session['loc_id']
+    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/?registrationkey={bls_key}&LAUST{state_code}0000000000003?latest=true".format(
+        state_code = '42',
+        bls_key = BLS_API_KEY
     )
-    bls_response = requests.get(url=bls_unemployment)
+    bls_response = requests.post(url=bls_unemployment)
     bls_content = bls_response.json()
     request.session['bls_unemployment'] = bls_content['Results']['series'][0]['data'][0]['value']
 

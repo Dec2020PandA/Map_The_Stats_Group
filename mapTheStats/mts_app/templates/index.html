@@ -103,22 +103,12 @@
             </div>
             <hr class="line">
             <div class="col-12">
-                <!-- {% if loc_type in request.session %}
-            <h2>{selected_loc} stats:</h2>
-            <ul>
-                <li>Amount of people living in {selected_loc}: {census_population}</li>
-                <li>Average income for {selected_loc} residents: {bea_average_income}</li>
-                <li>Unemployment rate in {selected_loc}: {bls_unemployment}</li>
-                <li>Percentage of people living below poverty in {selected_loc}: {census_poverty}</li>
-            </ul>
-        {% endif %}
-        <p class="lead">Display results here</p> -->
                 <div class="lead">
                     {% if selected_loc %}
                     <h2>{{selected_loc}} stats:</h2>
                     <ul>
                         <li>Amount of people living in {{selected_loc}}: {{census_population}}</li>
-                        <li>Average income for {{selected_loc}} residents: {{bea_average_income}}</li>
+                        <li>Average income for {{selected_loc}} residents: ${{bea_average_income}}</li>
                         <li>Unemployment rate in {{selected_loc}}: {{bls_unemployment}} %</li>
                         <li>Percentage of people living below poverty in {{selected_loc}}: {{census_poverty}} %</li>
                     </ul>
