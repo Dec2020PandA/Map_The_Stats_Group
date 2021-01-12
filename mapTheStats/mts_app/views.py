@@ -104,8 +104,7 @@ def state_api_call(request):
     request.session['census_population'] = "{:,}".format(int(census_content[1][1]))
 
     ## BLS API call for unemployment rate for selected state
-    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/?registrationkey={bls_key}&LAUST{state_code}0000000000003?latest=true".format(
-        state_code = '42',
+    bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/?registrationkey={bls_key}&latest=true".format(
         bls_key = BLS_API_KEY
     )
     bls_response = requests.post(url=bls_unemployment)
