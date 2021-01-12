@@ -92,7 +92,7 @@ def state_api_call(request):
     )
     census_response = requests.get(url=census_poverty)
     census_content = census_response.json()
-    request.session['census_below_poverty'] = census_content[1][1]
+    request.session['census_below_poverty'] = census_content[1][1] + "%"
 
     ## CENSUS API call for estimated population in California // Accesses different database than ACS
     census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=state:{state_code}&key={census_key}".format(
@@ -121,7 +121,7 @@ def state_api_call(request):
     json=data
     )
     bls_content = bls_response.json()
-    request.session['bls_unemployment'] = bls_content['Results']['series'][0]['data'][0]['value']
+    request.session['bls_unemployment'] = bls_content['Results']['series'][0]['data'][0]['value'] + "%"
 
     return redirect('/')
 

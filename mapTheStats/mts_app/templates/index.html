@@ -104,13 +104,16 @@
             <hr class="line">
             <div class="col-12">
                 <div class="lead">
+                    {% if not selected_loc %}
+                        <h2>Click an area to view statistics here!</h2>
+                    {% endif %}
                     {% if selected_loc %}
                     <h2>{{selected_loc}} stats:</h2>
                     <ul>
                         <li>Amount of people living in {{selected_loc}}: {{census_population}}</li>
                         <li>Average income for {{selected_loc}} residents: ${{bea_average_income}}</li>
-                        <li>Unemployment rate in {{selected_loc}}: {{bls_unemployment}} %</li>
-                        <li>Percentage of people living below poverty in {{selected_loc}}: {{census_poverty}} %</li>
+                        <li>Unemployment rate in {{selected_loc}}: {{bls_unemployment}}</li>
+                        <li>Percentage of people living below poverty in {{selected_loc}}: {{census_poverty}}</li>
                     </ul>
                     {% endif %}
                 </div>
@@ -128,9 +131,9 @@
             </div>
             <hr class="line">
             <div class="col-12">
-                <p class="lead">Map the Stats is for people who like to move, people who can't stand still. It's for
+                <p class="lead">Map the Stats is for people who like numbers, statistics, and data. It's for
                     those who are on the go and want to be prepared. Map the Stats provides you with important
-                    information about your destination. We are here for you when you are on the move.</p>
+                    information about your destination. We are still in the early developmental stage, and plan on having much more detailed information as soon as we can.</p>
             </div>
         </div>
     </div>
