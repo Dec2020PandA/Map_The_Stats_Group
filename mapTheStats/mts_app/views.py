@@ -9,19 +9,27 @@ from .api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERS
 def index (request):
     if 'loc_type' in request.session:
         if request.session['loc_type'] == 'state':
-            context = {
+            if 'location_selected' in request.session:
+                context = {
+                    'gmaps' : GOOGLE_MAPS_API_KEY,
+                    'selected_loc' : request.session['location_selected'],
+                    'bea_average_income' : request.session['bea_average_income'],
+                    'census_poverty' : request.session['census_below_poverty'],
+                    'census_population' : request.session['census_population'],
+                    'bls_unemployment' : request.session['bls_unemployment']
+                }
+                temp_loc = request.session['location_selected']
+                request.session.clear()
+                request.session['location_selected'] = temp_loc
+                return render(request, 'index.html', context)
+            else:
+                request.session.clear()
+                context = {
                 'gmaps' : GOOGLE_MAPS_API_KEY,
-                'selected_loc' : request.session['location_selected'],
-                'bea_average_income' : request.session['bea_average_income'],
-                'census_poverty' : request.session['census_below_poverty'],
-                'census_population' : request.session['census_population'],
-                'bls_unemployment' : request.session['bls_unemployment']
-            }
-            temp_loc = request.session['location_selected']
-            request.session.clear()
-            request.session['location_selected'] = temp_loc
-            return render(request, 'index.html', context)
+                }
+        return render(request, 'index.html', context)
     else:
+        request.session.clear()
         context = {
             'gmaps' : GOOGLE_MAPS_API_KEY,
         }
@@ -92,7 +100,7 @@ def state_api_call(request):
     )
     census_response = requests.get(url=census_population)
     census_content = census_response.json()
-    request.session['census_population'] = census_content[1][1]
+    request.session['census_population'] = "{:,}".format(int(census_content[1][1]))
 
     ## BLS API call for unemployment rate for selected state
     bls_unemployment = "https://api.bls.gov/publicAPI/v2/timeseries/data/LAUST{state_code}0000000000003?latest=true".format(
