@@ -119,6 +119,9 @@ figure {
   height: 780px;
   width: 1270px;
 }
+li {
+  list-style-type: none;
+}
 /*
 Extra small (xs) devices (portrait phones, less than 576px)
 No media query since this is the default in Bootstrap
