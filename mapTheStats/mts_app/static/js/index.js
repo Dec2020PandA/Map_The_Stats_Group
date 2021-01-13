@@ -65,11 +65,6 @@ const mapStyle = [
         stylers: [{ visibility: "off" }],
     },
     {
-        // featureType: "administrative.providence",
-        // elementType: "labels.text.stroke",
-        // stylers: [{ visibility: "off" }, { color: "#000000" }, {weight: 1}],
-    },
-    {
         featureType: "landscape",
         elementType: "geometry",
         stylers: [{ visibility: "off" }, { color: "#fcfcfc" }],
