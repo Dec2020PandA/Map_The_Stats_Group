@@ -111,15 +111,15 @@ function initMap() {
     xmlhttp.send();
 
     map.data.setStyle({
-        fillColor: 'blue',
+        fillColor: '#2195bc',
         strokeColor: 'white',
         strokeWeight: 1
     })
-    //LatLong click event
-    let infoWindow = new google.maps.InfoWindow({
-        content: "Click for Lat/Long",
-        position: startLoc,
-    })
+    // //LatLong click event
+    // let infoWindow = new google.maps.InfoWindow({
+    //     content: "Click for Lat/Long",
+    //     position: startLoc,
+    // })
     // infoWindow.open(map);
     // map.addListener("click", (mapsMouseEvent) => {
     //     infoWindow.close();
@@ -137,7 +137,7 @@ function initMap() {
     })
     map.data.addListener('click', function (e) {
         // load geo json MSA data
-        var msa_map = map.data.loadGeoJson( {visibility: false},
+        var msa_map = map.data.loadGeoJson(
             'https://cors-anywhere.herokuapp.com/https://storage.googleapis.com/map_the_stats/msa_data_usa.json',
         )
         map.data.overrideStyle(e.feature, { fillColor: 'yellow' })
@@ -157,11 +157,12 @@ function initMap() {
         document.getElementById('hidden_location').value = loc_id;
         document.getElementById('hidden_name').value = loc_name;
 
-        // function to find the state name from the
+        // function to find the state name from the 
+        
         for(var key in us_state_abbrev) {
             if(key == loc_name)
             var msa_fetcher = us_state_abbrev[key]
-            // console.log(msa_fetcher + "This is msa_fetcher")
+            console.log(msa_fetcher)
         }
 
         // function to reveal MSA data on state click
@@ -177,21 +178,20 @@ function initMap() {
                                 if(another_key == 'NAME'){
                                     var msa_chex = properties[another_key].indexOf(msa_fetcher)
                                     if(msa_chex > -1){
-                                        // console.log(properties[another_key] + " " + "Succesfully determined to be in the selected state!")
-                                        // var verified_msa = arr[i];
-                                        // tmpLayer.getSource().addFeature(verified_msa);
+                                        console.log(properties[another_key] + " " + "Succesfully determined to be in the selected state!")
+                                        console.log(msa_map)
                                     }
                                 }
                             }
                         }
                     }
-                }
+                }     
             }
-        }
+        }  
 
     })
     map.data.addListener('mouseout', function (e) {
-        map.data.overrideStyle(e.feature, { fillColor: 'blue', strokeWeight: 1 });
+        map.data.overrideStyle(e.feature, { fillColor: '#2195bc', strokeWeight: 1 });
     })
 
     }
@@ -202,6 +202,9 @@ function initMap() {
     // load US state outline polygons from a GeoJson file
     map.data.loadGeoJson(
         "https://storage.googleapis.com/mapsdevsite/json/states.js",
-        { idPropertyName: "STATE" },
+        { idPropertyName: "STATE" },  
+    )
+    map.data.loadGeoJson(
+        'https://cors-anywhere.herokuapp.com/https://storage.googleapis.com/map_the_stats/us_outline.json',
     )
 }
