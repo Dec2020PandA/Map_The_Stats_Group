@@ -1,9 +1,9 @@
-# from django.shortcuts import render, redirect
-# from pprint import pprint
-# import requests
-# import json
-# from area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
-# from api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY, BLS_API_KEY
+from django.shortcuts import render, redirect
+from pprint import pprint
+import requests
+import json
+from area_codes import STATE_CODES, COUNTRY_CODES, MSA_CODES, BLS_MSA_CODES
+from api_keys import BEA_API_KEY, GOOGLE_MAPS_API_KEY, CENSUS_API_KEY, WEATHERSTACK_API_KEY, BLS_API_KEY
 
 
 
@@ -98,3 +98,10 @@
 # for set_data in series_data:
 #     print(set_data)
 
+census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=us:1&key={census_key}".format(
+        census_key=CENSUS_API_KEY
+    )
+census_response = requests.get(url=census_unemployment)
+census_content = census_response.json()
+# request.session['bls_unemployment'] = census_content[1][1] + "%"
+print(census_content[1][1])

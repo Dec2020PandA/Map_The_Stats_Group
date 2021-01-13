@@ -192,7 +192,8 @@ def country_api_call(request):
     )
     bea_response = requests.get(url=bea_average_income)
     bea_content = bea_response.json()
-    pprint(f"Location Selected: {bea_content['BEAAPI']['Results']['Data'][0]['GeoName']}\nPer Capita Income: {bea_content['BEAAPI']['Results']['Data'][0]['DataValue']}\nYear: {bea_content['BEAAPI']['Results']['Data'][0]['TimePeriod']}")
+    request.session['location_selected'] = bea_content['BEAAPI']['Results']['Data'][0]['GeoName']
+    request.session['bea_average_income'] = bea_content['BEAAPI']['Results']['Data'][0]['DataValue']
 
     ## Entire US percentage living below poverty // Notes above
     census_poverty = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0119PE&for=us:1&key={census_key}".format(
@@ -200,7 +201,7 @@ def country_api_call(request):
     )
     census_response = requests.get(url=census_poverty)
     census_content = census_response.json()
-    pprint(f"Location Selected: {census_content[1][0]}\n\nPercentage of People living below poverty: {census_content[1][1]}")
+    request.session['census_below_poverty'] = census_content[1][1] + "%"
 
     ## Entire US population // Notes above
     census_population = "https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=us:1&key={census_key}".format(
@@ -208,7 +209,7 @@ def country_api_call(request):
     )
     census_response = requests.get(url=census_population)
     census_content = census_response.json()
-    pprint(census_content)
+    request.session['census_population'] = "{:,}".format(int(census_content[1][1]))
 
     ## Entire US unemployment rate average // Notes above
     census_unemployment = "https://api.census.gov/data/2019/acs/acs1/profile?get=NAME,DP03_0009PE&for=us:1&key={census_key}".format(
@@ -216,6 +217,6 @@ def country_api_call(request):
     )
     census_response = requests.get(url=census_unemployment)
     census_content = census_response.json()
-    pprint(census_content)
+    request.session['bls_unemployment'] = census_content[1][1] + "%"
 
     return redirect('/')
