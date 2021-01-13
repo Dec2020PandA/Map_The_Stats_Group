@@ -165,9 +165,6 @@ function initMap() {
         }
 
         // function to reveal MSA data on state click
-        var tmpLayer;
-        map.addLayer(tmpLayer);
-        // tmpLayer.getSource().clear();
         var x = msa_data;
         for(key in x) {
             if (key == 'features') {
@@ -181,15 +178,14 @@ function initMap() {
                                     var msa_chex = properties[another_key].indexOf(msa_fetcher)
                                     if(msa_chex > -1){
                                         // console.log(properties[another_key] + " " + "Succesfully determined to be in the selected state!")
-                                        var verified_msa = arr[i];
-                                        tmpLayer.getSource().addFeature(verified_msa);
+                                        // var verified_msa = arr[i];
+                                        // tmpLayer.getSource().addFeature(verified_msa);
                                     }
                                 }
                             }
                         }
                     }
                 }
-                tmpLayer.setVisible(true);
             }
         }
 
