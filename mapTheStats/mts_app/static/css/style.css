@@ -56,6 +56,10 @@ figure {
     padding: 1rem;
 }
 
+li {
+  list-style: none;
+}
+
 
 /* custom styling */
 .navbar {
@@ -110,11 +114,16 @@ figure {
   color: #D5D5D5;
 }
 
+.btn {
+  margin-top: 800px;
+  margin-left: -690px;
+}
+
 /* map style */
 
 #map {
   overflow: hidden;
-  margin-left: 340px;
+  margin-left: 275px;
   position: relative;
   height: 780px;
   width: 1270px;
