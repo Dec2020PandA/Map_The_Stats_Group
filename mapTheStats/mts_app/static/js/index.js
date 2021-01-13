@@ -75,21 +75,21 @@ function initMap() {
         map.setZoom(6);
         document.getElementById('hidden_location').value = loc_id;
         document.getElementById('hidden_name').value = loc_name;
+        // console.log(Object.keys(us_state_abbrev))
+        for(var key in us_state_abbrev) {
+            if(key == loc_name)
+            var msa_fetcher = loc_name
+        }
     })
     map.data.addListener('mouseout', function (e) {
         map.data.overrideStyle(e.feature, { fillColor: 'blue' });
     })
-}
-
-/** Loads the state boundary polygons from a GeoJSON source. */
-function loadMapShapes() {
+    }
+    /** Loads the state boundary polygons from a GeoJSON source. */
+    function loadMapShapes() {
     // load US state outline polygons from a GeoJson file
     map.data.loadGeoJson(
         "https://storage.googleapis.com/mapsdevsite/json/states.js",
         { idPropertyName: "STATE" }
     );
-    // map.data.loadGeoJson(
-    //     "https://storage.googleapis.com/map_the_stats/gz_2010_us_050_00_20m.js",
-    //     { idPropertyName: "CENSUSAREA"}
-    // )
 }
